@@ -1,10 +1,10 @@
 #############################################################################################################
 ##Author :          John S. House - BRC;NCSU
-##Last Modified :   8.16.17 - John House 
+##Last Modified :   8.16.17 - John House
 ##Purpose:          Use Cleaned hash and count file to create normalized counts and max dose contrasts
 ##NOTE:             ***THIS SCRIPT TAKES THE LONGEST TIME AND THE MOST COMPUTING RESOURCES***
 ##NOTE:             18 workers at 3.0ghz will take ~ 2-6 minutes on a 3000 feature x 200 sample array for each
-##NOTE:               DESeq2 call including each contrast
+##NOTE:               DESeq2 call including each contrast for this 2800 gene dataset
 ##Info:             MRO version 3.4
 ##Input:            Hash file and count matrix from TOS_S1....R
 ##Output:           Normalized Count Matrix (Output Files/Cleaned_data/normcounts.csv) for entire experiment
@@ -52,7 +52,7 @@ combined_maxdose <- data.frame()
 ptm <- proc.time()
 for (i in 1:nrow(treatment)) {
   print(paste0("Starting contrast ", i, " of ", nrow(treatment)))
-  myds <- treatment[i, ]
+  myds <- treatment[i,]
   test <-
     results(
       dds,
@@ -75,7 +75,3 @@ proc.time() - ptm
 combined_maxdose$Treatment <- factor(combined_maxdose$Treatment)
 save(combined_maxdose, file = "Output Files/MaxDoseContrasts/combined_maxdose.RData")
 write.csv(combined_maxdose, file = "Output Files/MaxDoseContrasts/combined_maxdose.csv")
-
-
-
-

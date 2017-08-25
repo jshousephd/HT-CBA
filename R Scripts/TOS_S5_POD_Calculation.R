@@ -32,13 +32,13 @@ wilcox_flag <-
 ## Examine if any cases exist where (overall trend signficant, vehicles != treatments, but trt trend was not significant)
 flagged_data_report <-
   filter(sp_flag_stats,
-         Wilcoxon_qval > adj_pval_cutoff & mcc_qval_trt > adj_pval_cutoff)
+         Wilcoxon_qval > adj_pval_cutoff &
+           mcc_qval_trt > adj_pval_cutoff)
 save(flagged_data_report, file = "Output Files/DRM/flagged_data_report.RData")
 write.csv(flagged_data_report, file = "Output Files/DRM/flagged_data_report.csv")
 
 ## CHANGE ALL VALUES OF DOSE AND CONTROLS TO BE = LOG2((COUNT+0.5)/AVG_VEHICLE_COUNTS)###
 veh_only_idx <- grep("VEH", names(wilcox_flag), ignore.case = T)
-  
 trt_only_idx <- grep("dose", names(wilcox_flag), ignore.case = T)
 allcounts_idx <-
   c(trt_only_idx, veh_only_idx, length(names(wilcox_flag)))
@@ -91,7 +91,7 @@ for (i in 1:nrow(log_comp_ds)) {
   if (i %% 100 == 0) {
     print(paste0(i, " of ", nrow(log_comp_ds)))
   }
-  mydata <- log_comp_ds[i, ]
+  mydata <- log_comp_ds[i,]
   response <-
     as.vector(as.matrix(mydata[1, c(trt_only_idx, veh_only_idx)]))
   neg_response = -(response)
@@ -210,7 +210,7 @@ for (i in 1:nrow(myds1)) {
   if (i %% 25 == 0) {
     print(paste0(i, " of ", nrow(myds1)))
   }
-  mydata <- myds1[i, ]
+  mydata <- myds1[i,]
   y = as.vector(as.matrix(mydata[1, c(trt_only_idx, veh_only_idx)]))
   temp1 <- try(getpod(x, y, plot.it = F, show.pod = F))
   LL4_POD[i] <-

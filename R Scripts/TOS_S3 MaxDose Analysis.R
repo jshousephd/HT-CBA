@@ -1,6 +1,6 @@
 #############################################################################################################
 ##Author :          John S. House - BRC;NCSU
-##Last Modified :   8.16.17 - John House 
+##Last Modified :   8.16.17 - John House
 ##Purpose:          Take MaxDose L2FC Conduct Cluster Analyses
 ##Info:             MRO version 3.4
 ##Input:            combined_maxdose from TOS_S2....R
@@ -64,7 +64,7 @@ boxplot(
   cex = 1.5,
   col = "lightsteelblue4",
   border = "darkorange2",
-  las=2
+  las = 2
 )
 dev.off()
 
@@ -112,12 +112,12 @@ heatmap.2(
   cexCol = 1.5,
   key.xlab = NULL,
   main = "Treatment Clustering of L2FC",
-  cex=1,
+  cex = 1,
   margins = c(9, 1)
 )
 dev.off()
 
-library(scatterplot3d) 
+library(scatterplot3d)
 ### 3D scatterplot of PCA components for Manuscript
 p = prcomp(l2fc_m, center = T)
 pc <- as.data.frame(unclass(p$rotation)[, 1:3])
@@ -131,15 +131,18 @@ s3d <- scatterplot3d(
   y = pc$PC2,
   z = pc$PC3,
   color = "purple",
-  pch=16,
-  cex.symbols=2,
+  pch = 16,
+  cex.symbols = 2,
   cex.lab = 1.25,
   xlab = paste0("PC1 - ", p_var[1], "% Variance"),
   ylab = paste0("PC2 - ", p_var[2], "% Variance"),
   zlab = paste0("PC3 - ", p_var[3], "% Variance"),
-  main = "Treatment PCA (L2FC)", cex.main=1.5
+  main = "Treatment PCA (L2FC)",
+  cex.main = 1.5
 )
-text(s3d$xyz.convert(pc$PC1, pc$PC2, pc$PC3), labels = rownames(pc), pos = 4 )
+text(s3d$xyz.convert(pc$PC1, pc$PC2, pc$PC3),
+     labels = rownames(pc),
+     pos = 4)
 dev.off()
 
 ### Summary of how Many Max Dose Responsive Genes Found by Treatment ####
@@ -161,28 +164,43 @@ q_sig
 
 total_s <- q_sig %>%
   group_by(Treatment) %>%
-  summarise(tot=sum(Gene_number))
+  summarise(tot = sum(Gene_number))
 
 sbc <-
   ggplot(data = q_sig, aes(x = Treatment, y = Gene_number)) +
-  geom_bar(stat = "identity", aes(fill=Direction)) +
-  geom_text(data= q_sig, aes(y=Gene_number, label = Gene_number ),
-            size=4, position = position_stack(vjust=.5)) +
-  geom_text(data=total_s,
-            aes(y=tot, label = tot), size = 4, vjust=-.5) +
+  geom_bar(stat = "identity", aes(fill = Direction)) +
+  geom_text(
+    data = q_sig,
+    aes(y = Gene_number, label = Gene_number),
+    size = 4,
+    position = position_stack(vjust = .5)
+  ) +
+  geom_text(
+    data = total_s,
+    aes(y = tot, label = tot),
+    size = 4,
+    vjust = -.5
+  ) +
   theme_bw()  +
-  theme(text = element_text(size=20),
-        axis.text.x = element_text(size = 13, angle = 90, hjust = 1, face = "bold")) +
+  theme(
+    text = element_text(size = 20),
+    axis.text.x = element_text(
+      size = 13,
+      angle = 90,
+      hjust = 1,
+      face = "bold"
+    )
+  ) +
   scale_fill_manual(
     values = c("snow3", "lightsteelblue1"),
     name = "Direction",
     labels = c("Up", "Down")
   ) +
-  ggtitle(paste0("Significant DEGs by Treatment")) + 
-  theme(plot.title=element_text(face="bold", size = 20)) +
+  ggtitle(paste0("Significant DEGs by Treatment")) +
+  theme(plot.title = element_text(face = "bold", size = 20)) +
   labs(y = paste0("Differentially Expressed Genes"), x = "") +
-  theme(axis.title=element_text(face="bold", size = 16)) +
-  expand_limits(y=c(0, 1.05*max(total_s$tot) ))
+  theme(axis.title = element_text(face = "bold", size = 16)) +
+  expand_limits(y = c(0, 1.05 * max(total_s$tot)))
 print(sbc)
 
 pdf(file = "Output Files/MaxDoseContrasts/Hist_MaxDoseDEGs.pdf",
@@ -193,6 +211,3 @@ dev.off()
 
 ### Report of Number of DEGs by Treatment at Max Dose ###
 write.csv(q_sig, row.names = F, file = "Output Files/MaxDoseContrasts/Significant_Genes_by_Treatment.csv")
-
-
-

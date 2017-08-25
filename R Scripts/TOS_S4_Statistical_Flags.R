@@ -72,7 +72,7 @@ trt_only_idx <- seq(1:length(mynames))[regexpr("VEH", mynames) < 0]
 all_idx <- seq(1:length(mynames))
 
 ## Remove Records with < 5 counts average across all columns ##
-stats_ds <- stats_ds[rowMeans(stats_ds) > 5, ]
+stats_ds <- stats_ds[rowMeans(stats_ds) > 5,]
 
 head(stats_ds)
 

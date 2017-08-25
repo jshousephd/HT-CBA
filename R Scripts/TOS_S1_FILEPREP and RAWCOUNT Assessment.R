@@ -79,7 +79,7 @@ if (sum(rownames(hash1) != colnames(finalcounts)) > 0) {
 }
 ### REMOVE TRANSCRIPTS THAT HAVE 0 OR 1 as a rowSum across experiment ###
 counts_clean1 <-
-  finalcounts[rowSums(finalcounts) > 1,]
+  finalcounts[rowSums(finalcounts) > 1, ]
 nrow(counts_clean1)
 
 ### Assess Well counts ###
@@ -113,7 +113,10 @@ write.csv(subset(hash1, hash1$col_totals <= raw_count_cutoff),
           file = "Output Files/RawCountResults/low_count_report.csv")
 qc_hash <- subset(hash1, hash1$col_totals > raw_count_cutoff)
 qc_counts <- counts_clean1[, rownames(qc_hash)]
-qc_counts <- qc_counts[rowSums(qc_counts) > 1,]
+
+## Rows (probes/genes) with zero counts or only 1 count across all treatments are removed. ##
+## This can be changed by the user to be more or less stringent as needed ###
+qc_counts <- qc_counts[rowSums(qc_counts) > 1, ]
 nrow(qc_counts)
 qc_hash$Treatment <- factor(qc_hash$Treatment)
 
@@ -127,19 +130,21 @@ attrs$ID2 <- paste0(attrs$group, "_", attrs$Replicate)
 head(attrs)
 media_counts <-
   counts[, rownames(subset(attrs, Treatment == "VEHICLE"))]
-media_counts <- media_counts[rowSums(media_counts) > 0,]
+media_counts <- media_counts[rowSums(media_counts) > 0, ]
 ### Replacing names of count data with the ID2 variable that matches the rownname of the hash file (attrs) ###
 mm <- match(names(media_counts), rownames(attrs))
 names(media_counts)[!is.na(mm)] <-
   as.character(attrs$ID2[na.omit(mm)])
-media_counts <- media_counts[rowSums(media_counts) > 0,]
+media_counts <- media_counts[rowSums(media_counts) > 0, ]
 ### Since these are Raw Counts we want to normalize by library size first ###
-media_counts_lib_size <- apply(media_counts, 2, function(x)
-  x / sum(x))
+media_counts_lib_size <-
+  apply(media_counts, 2, function(x)
+    x / sum(x))
 pcamatrix <- as.matrix(media_counts_lib_size)
 
 ### The main source of 'structure' in the data are the high to low counts by gene ###
 ### We need to get rid of that structure to assess Principal Components of our Vehicle Counts for Replication###
+
 X <- t(scale(t(pcamatrix)))  ## Scales Treatment Columns ##
 p = prcomp(X, center = T)
 pc <- unclass(p$rotation)[, 1:3]
@@ -250,8 +255,9 @@ dev.off()
 
 # Remove Outlier controls and Write cleaned Data Sets for DESeq2 --------------------------------------------------
 
-### WRITE OUT COUNTS HERE FOR DESEQ2 for TOS_S2... Script ####
-### qc_counts and qc_hash are the cleaned input into DESeq2 normalization and DGE identification ###
+### WRITE OUT COUNTS HERE FOR DESEQ2 for TOS_S2_DESeq2.R ####
+### qc_counts and qc_hash are the cleaned input into DESeq2 normalization and DGE identification that runs next ###
+### Outliers are removed based on 3sd from the mean of vehicle control sample correlations ###
 toremove <-
   rownames(meancors)[(meancors$MeanCorr < (mean(meancors$MeanCorr) - 3 * (sd(meancors$MeanCorr)))) |
                        (meancors$MeanCorr > (mean(meancors$MeanCorr) + 3 * (sd(meancors$MeanCorr))))]
@@ -266,3 +272,41 @@ if (identical(rownames(qc_hash), colnames(qc_counts))) {
 } else {
   stop("Colnames of count matrix don't match rownames of hash file. Please fix")
 }
+
+
+### Heatmap of Well Counts - Only to be run if you have full plate. Modify otherwise###
+### This code used randomly generated numbers to demonstrate #########################
+
+# hash2<-hash
+# rownames(hash2)<-paste0("X",rownames(hash2))
+# fc <- raw_count_data[,rownames(hash2)]
+# hash2$well_reads <- colSums(fc)
+# all.letters<-LETTERS[1:26]
+# mapds<- hash2 %>% select(Index.Set, X96wp.position,Treatment,Sample.ID,well_reads) %>%
+#   mutate(row_letter=substr(X96wp.position,1,1),
+#          column_num=substr(X96wp.position,2,3)) 
+# mapds$rl <- ifelse(mapds$Index.Set %in% c("A","B"), mapds$row_letter, all.letters[match(mapds$row_letter,all.letters)+8])
+# mapds$cn <- ifelse(mapds$Index.Set %in% c("A","C"), mapds$column_num, as.character(as.numeric(mapds$column_num) + 12))
+# hm_counts<- dcast(rl~cn,data=mapds,value.var = "well_reads",fill=NA)
+# row.names(hm_counts) <- hm_counts[,1]
+# trt_matrix<-dcast(rl~cn,data=mapds,value.var="Treatment")    
+# sample_matrix<-dcast(rl~cn,data=mapds, value.var="Sample.ID")
+# 
+# 
+# 
+# library(pheatmap); library(RColorBrewer)
+# b<-as.matrix(hm_counts[,-1])
+# b<-ifelse(b<100000,abs(rnorm(384,500000,250000)),b)
+# b<-b/100000
+# b<-ifelse(b<1,NA,b)
+# 
+# bcolors<- colorRampPalette(c("yellow","orange","purple"), space = "rgb")(15)   
+# 
+# pdf(file="heatmap_plate.pdf",height= 4.5, width=10.5)    
+# pheatmap((as.matrix(b)), display_numbers = T, fontsize_number=12,number_format="%.1f", cluster_rows=FALSE, cluster_cols = FALSE, color=bcolors, main="Simulated Full Count Matrix (100,000s) \n White Cells < 100,000 Total Reads")
+# dev.off()
+
+
+
+
+

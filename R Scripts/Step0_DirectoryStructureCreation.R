@@ -2,7 +2,7 @@
 ##Author :          John House - BRC;NCSU
 ##Last Modified :   2/28/17 - John House
 ##Purpose:          Create Directory Structures For New Project 
-##Info: MRO version 3.3.2
+##
 ##                  
 #############################################################################################################
 ### Change following path to the base directory of your TempOseq experiments
@@ -12,7 +12,6 @@ subDir = "ht_cba_manuscript"
 setwd(mainDir); print(getwd())
 
 dir.create(file.path(mainDir,subDir))
-dir.create(file.path(mainDir,subDir,"Initial Files"))  ## Files for Design Layout Etc from Client
 dir.create(file.path(mainDir,subDir,"Input Files"))    ## Sequencing Files and Hash File for Experiment
 dir.create(file.path(mainDir,subDir,"R Scripts"))      ## All other production Scripts
 dir.create(file.path(mainDir,subDir,"Output Files"))   ## 

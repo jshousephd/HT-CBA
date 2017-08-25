@@ -1,0 +1,32 @@
+# High throughput Count Based Assessment.
+
+### This portion of the pipeline requires raw count data. If this is a tempOseq experiment, the other portion of the pipeline for generating raw counts can be found here:  https://github.com/demis001/temposeqcount
+
+ 
+### Input Files  - Contains raw count file from temposeqcount application linked above as well as a hash file with descriptions and well information and possible covariates
+
+### Output Files - Contains 5 folders for various parts of pipeline generated data
+
+### R Scripts - Contains each of the scripts necessary to run this pipeline after you get count data. They are as follows.
+
+##### Step0_DirectoryStructureCreation.R - Run this script to set up your new experiment with the appropriate directory structure. This will be your new working directory to change each of the following scripts to at the beginning of each script.
+
+Note, there is a setwd() near the beginning of each of the numbered scripts below. You will need to copy these scripts to your newly created folder in your new experiment and change that working directory to reflect your location
+
+##### TOS_S1_FILEPREP and RAWCOUNT Assessment.R - This script reads in the count and hash files (that you populate in 'Input Files' after directory creation). It then cleans raw data and controls. You may need to change names if your "controls" aren't named vehicle etc... on the hash file
+
+##### TOS_S2_DESeq2.R - Longest script to run. Utilizes DESeq2 to do normalization, create normalized count matrix, and conduct Differential Gene Expression and output files
+
+##### TOS_S3 MaxDose Analysis.R - Visualization of DEGs generated from TOS_S2
+
+##### TOS_S4_Statistical_Flags.R - Identify treatment/gene combinations to be assessed by Dose Reponse. Note: this assumes you have dose response data and a dose defined in your hash file.
+
+##### TOS_S5_POD_Calculation.R - Generates all the fitted curves for IDs generated in Step 4. These include tcpl curves/AICs/PODs as well as 4-parameter hill function curves/AICs/PODs
+
+##### TOS_S6_POD_Assessment.R - Evaluation of the best fit for each ID and visualization
+
+##### jsh_getpod.R - script that provides the function call for the 4-parameter model fitting by the DRC package
+
+##### Example Graphs for POD Modeling.R - Extra - visualization of Dose Reponse fitted curves for a given treatment/gene
+
+##### getpod_sim.R  used by Example Graphs for POD Modeling.R 

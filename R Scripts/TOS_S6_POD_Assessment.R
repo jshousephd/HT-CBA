@@ -88,6 +88,7 @@ totalmodels <- sum(!is.na(allpod$MinAIC_Model))
 t <- table(allpod$MinAIC_Model)
 model_freq <- round(t / totalmodels * 100, 1)
 labels <- paste0(model_freq, " %")
+pdf("Output Files/DRM/fig6c.pdf",height=5.25,width=8)
 par(mar = c(5, 5, 5, 5))
 bp <- barplot(
   t,
@@ -109,6 +110,7 @@ text(
   pos = 3,
   cex = 2
 )
+dev.off()
 table(allpod$MinAIC_Model)
 
 ### Characterize the Dose Respose by Chemical ###
@@ -126,13 +128,13 @@ summarystats <- allpod %>% filter(!is.na(log10pod)) %>%
     Mean_POD = mean(log10pod, na.rm = T),
     Median_POD = median(log10pod)
   )
-
+pdf("Output Files/DRM/fig6d.pdf",height=5.25,width=8)
 par(mar = c(5, 5, 5, 5))
 x <- boxplot(
   log10pod ~ Treatment,
   data = allpod,
   main = "Distribution of Calculated POD",
-  ylab = "Log10(Dose) mM",
+  ylab = "Log10(Dose) uM",
   col = "lightsteelblue4",
   border = "darkorange2",
   cex.names = 2,
@@ -146,3 +148,4 @@ points(means,
        col = "purple",
        pch = 18,
        cex = 2)
+dev.off()
