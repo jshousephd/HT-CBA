@@ -81,7 +81,9 @@ if (sum(rownames(hash1) != colnames(finalcounts)) > 0) {
 counts_clean1 <-
   finalcounts[rowSums(finalcounts) > 1, ]
 nrow(counts_clean1)
-
+summary(counts_clean1)
+# mean(as.matrix(counts_clean1))
+# mean(as.matrix(finalcounts))
 ### Assess Well counts ###
 ### Summarize Each Column Total ###
 hash1$col_totals <- colSums(counts_clean1)

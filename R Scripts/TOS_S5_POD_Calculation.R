@@ -1,6 +1,6 @@
 #############################################################################################################
 ##Author :        John House - BRC;NCSU
-##Last Modified : 6/28/17 - John House
+##Last Modified : 9/29/17 - John House - Changed logic value for wilcox_flag data.frame generation; did not change result
 ##Purpose:        Using tcpl to fit dose response curves and generate POD estimates
 ##Info:           R version 3.4
 ##Input:          stats dataset from TOS_S4...R
@@ -25,8 +25,7 @@ sp_flag_stats <- filter(stats, mcc_qval_all <= adj_pval_cutoff)
 ## Select where trt != controls via wilcoxon rank sum test for differences, or if they are equal, and trts are significant select those too ##
 wilcox_flag <-
   filter(sp_flag_stats, (Wilcoxon_qval <= adj_pval_cutoff) |
-           ((Wilcoxon_qval <= adj_pval_cutoff) &
-              (mcc_qval_trt < adj_pval_cutoff)
+           ((Wilcoxon_qval > adj_pval_cutoff) & (mcc_qval_trt < adj_pval_cutoff)
            ))
 
 ## Examine if any cases exist where (overall trend signficant, vehicles != treatments, but trt trend was not significant)
