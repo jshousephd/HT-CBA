@@ -15,7 +15,8 @@ Note, there is a setwd() near the beginning of each of the numbered scripts belo
 
 ##### TOS_S1_FILEPREP and RAWCOUNT Assessment.R - This script reads in the count and hash files (that you populate in 'Input Files' after directory creation). It then cleans raw data and controls. You may need to change names if your "controls" aren't named vehicle etc... on the hash file
 
-##### TOS_S2_DESeq2.R - Longest script to run. Utilizes DESeq2 to do normalization, create normalized count matrix, and conduct Differential Gene Expression and output files
+##### TOS_S2_DESeq2.R - Deprecated
+##### TOS_S2_DESeq2_modifed 8.8.19_Deseq_Contrasts - Generate normalized counts and differential gene expression results for individual contrasts.
 
 ##### TOS_S3 MaxDose Analysis.R - Visualization of DEGs generated from TOS_S2
 
